@@ -116,6 +116,38 @@ public class LoomTools : MonoBehaviour
         }
     }
 
+    async Task<string> GetUserCoin(int _num)
+    {
+        var result = await contract.StaticCallAsync<MapEntry>("GetMsg", new MapEntry
+        {
+            Key = "coin" + _num.ToString()
+        });
+
+        return result.Value.ToString();
+
+    }
+
+
+    async Task<string[]> GetRanking()
+    {
+        var result = await contract.StaticCallAsync<MapEntry>("GetMsg", new MapEntry
+        {
+            Key = "usercount"
+        });
+
+        string[] users = new string[int.Parse(result.Value.ToString())];
+
+        for (int i=1; i<int.Parse(result.Value.ToString())+1; i++)
+        {
+            var result2 = await GetUserCoin(i);
+            users[i-1] = result2;
+        }
+
+        return users;
+
+    }
+
+
     async Task StaticCallContract(Contract contract)
     {
         var result = await contract.StaticCallAsync<MapEntry>("GetMsg", new MapEntry
@@ -259,7 +291,7 @@ public class LoomTools : MonoBehaviour
 		contract = await GetContract(privateKey, publicKey);
 
         await CallContract(contract);
-
+        await GetRanking();
         // This should print: { "key": "123", "value": "hello!" } in the Unity console window
         //       await StaticCallContract(contract);
         // This should print: { "key": "321", "value": "456" } in the Unity console window
