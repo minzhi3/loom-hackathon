@@ -92,7 +92,7 @@ public class LoomTools : MonoBehaviour
             Value = "0"
         });
 
-        Debug.Log("Now Your user ID is: " + result.ToString());
+        Debug.Log("Now Your user ID is: " + userId.ToString());
 
     }
 
