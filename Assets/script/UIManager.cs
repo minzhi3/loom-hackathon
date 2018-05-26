@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Threading.Tasks;
 
 public class UIManager : MonoBehaviour {
 
@@ -18,11 +19,12 @@ public class UIManager : MonoBehaviour {
 			Instance = this;
 		}
 	}
-
-    public void AddScore(int _delta)
+    
+	public async Task AddScore(int _delta)
 	{
 		this.score += _delta;      
-        UpdateScoreText();
+		await LoomTools.Instance.GetCoin();
+		Debug.Log("add score");
 	}
     public void SetScore(int _score)
 	{

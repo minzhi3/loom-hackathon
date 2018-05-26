@@ -40,10 +40,10 @@ namespace Pacman
         {
         }
 
-        public void EatDot(int value)
+        public async void EatDot(int value)
         {
             Debug.Log("eat dot " + value);
-			UIManager.Instance.AddScore(value);
+			await UIManager.Instance.AddScore(value);
         }
 
 		public void SetEffect(DotEffect effect)
