@@ -128,7 +128,7 @@ public class LoomTools : MonoBehaviour
     }
 
 
-    async Task<string[]> GetRanking()
+    public async Task<string[]> GetRanking()
     {
         var result = await contract.StaticCallAsync<MapEntry>("GetMsg", new MapEntry
         {
