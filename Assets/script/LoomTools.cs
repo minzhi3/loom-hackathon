@@ -100,8 +100,8 @@ public class LoomTools : MonoBehaviour
         }
     }
 
-
-    public async Task<String> GetCoinAmount(Contract contract)
+    
+    public async Task<String> GetCoinAmount()
     {
 
         var result = await contract.StaticCallAsync<MapEntry>("GetMsg", new MapEntry

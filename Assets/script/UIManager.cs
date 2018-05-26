@@ -22,19 +22,21 @@ public class UIManager : MonoBehaviour {
     
 	public async Task AddScore(int _delta)
 	{
-		this.score += _delta;      
+		//this.score += _delta;      
 		await LoomTools.Instance.GetCoin();
 		Debug.Log("add score");
-	}
-    public void SetScore(int _score)
-	{
-		this.score = _score;
         UpdateScoreText();
 	}
-
-	void UpdateScoreText()
+    /*public void SetScore(int _score)
 	{
-		this.ScoreText.text = string.Format("Score:{0}", this.score);
+		//this.score = _score;
+        UpdateScoreText();
+	}*/
+    
+	async Task UpdateScoreText()
+	{
+		var str = await LoomTools.Instance.GetCoinAmount();
+		this.ScoreText.text = string.Format("Score:{0}", str);
 	}
 	// Use this for initialization
 	void Start () {      
