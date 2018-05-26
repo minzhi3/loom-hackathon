@@ -148,6 +148,49 @@ public class LoomTools : MonoBehaviour
         }
     }
 
+    public async Task<bool> Purchase(int _price)
+    {
+
+        var result = await contract.StaticCallAsync<MapEntry>("GetMsg", new MapEntry
+        {
+            Key = "coin"
+        });
+
+        if (result != null)
+        {
+
+            // This should print: { "key": "123", "value": "hello!" } in the Unity console window
+            // provided `LoomQuickStartSample.CallContract()` was called first.
+            var x = int.Parse(result.Value.ToString());
+
+            if (_price < x)
+            {
+
+                x = x - _price;
+                //var x = result.ToString();
+                Debug.Log("You purchased new character and now your coin is : " + x);
+
+                await contract.CallAsync("SetMsg", new MapEntry
+                {
+                    Key = "coin",
+                    Value = x.ToString(),
+                });
+
+                return true;
+            }
+            else
+            {
+
+                return false;
+
+            }
+
+        }
+        else
+        {
+            throw new Exception("Smart contract didn't return anything!");
+        }
+    }
 
     // Use this for initialization
     async void Start()
