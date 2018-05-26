@@ -65,6 +65,8 @@ public class LoomTools : MonoBehaviour
                 Key = "usercount"
             });
 
+            Debug.Log("Current user count: " + result.ToString());
+
             userId = int.Parse(result.Value.ToString()) + 1;
             //var x = result.ToString();
 
@@ -73,11 +75,10 @@ public class LoomTools : MonoBehaviour
                 Key = "usercount",
                 Value = "userId"
             });
-
-
         }
         catch
         {
+            Debug.Log("Current no user: " + result.ToString());
             await contract.CallAsync("SetMsg", new MapEntry
             {
                 Key = "usercount",
