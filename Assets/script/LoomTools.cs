@@ -8,8 +8,10 @@ public class LoomTools : MonoBehaviour
 {
 	public static LoomTools Instance;
 	Contract contract;
+    public Identity identity;
+    public int userId;
 
-	private void Awake()
+    private void Awake()
     {
         if (Instance != null)
         {
@@ -25,13 +27,13 @@ public class LoomTools : MonoBehaviour
     {
         var writer = RPCClientFactory.Configure()
             .WithLogger(Debug.unityLogger)
-            .WithHTTP("http://127.0.0.1:46658/rpc")
+            .WithHTTP("http://192.168.251.50:46658/rpc")
             //.WithWebSocket("ws://127.0.0.1:46657/websocket")
             .Create();
 
         var reader = RPCClientFactory.Configure()
             .WithLogger(Debug.unityLogger)
-            .WithHTTP("http://127.0.0.1:46658/query")
+            .WithHTTP("http://192.168.251.50:46658/query")
             //.WithWebSocket("ws://127.0.0.1:47000/queryws")
             .Create();
 
@@ -55,11 +57,43 @@ public class LoomTools : MonoBehaviour
 
     async Task CallContract(Contract contract)
     {
+
+        try
+        {
+            var result = await contract.StaticCallAsync<MapEntry>("GetMsg", new MapEntry
+            {
+                Key = "usercount"
+            });
+
+            userId = int.Parse(result.Value.ToString()) + 1;
+            //var x = result.ToString();
+
+            await contract.CallAsync("SetMsg", new MapEntry
+            {
+                Key = "usercount",
+                Value = "userId"
+            });
+
+
+        }
+        catch
+        {
+            await contract.CallAsync("SetMsg", new MapEntry
+            {
+                Key = "usercount",
+                Value = "1"
+            });
+            userId = 1;
+        }
+
         await contract.CallAsync("SetMsg", new MapEntry
         {
-            Key = "coin",
+            Key = "coin" + userId.ToString(),
             Value = "0"
         });
+
+        Debug.Log("Now Your user ID is: " + result.ToString());
+
     }
 
     async Task CallContractWithResult(Contract contract)
@@ -106,7 +140,7 @@ public class LoomTools : MonoBehaviour
 
         var result = await contract.StaticCallAsync<MapEntry>("GetMsg", new MapEntry
         {
-            Key = "coin"
+            Key = "coin" + userId.ToString()
         });
 
         if (result != null)
@@ -120,11 +154,20 @@ public class LoomTools : MonoBehaviour
         }
     }
 
+    public async Task Ranking()
+    {
+        var str = await GetCoinAmount();
+        
+
+    }
+
+
+
     public async Task GetCoin()
     {
         var result = await contract.StaticCallAsync<MapEntry>("GetMsg", new MapEntry
         {
-            Key = "coin"
+            Key = "coin" + userId.ToString()
         });
 
         if (result != null)
@@ -137,7 +180,7 @@ public class LoomTools : MonoBehaviour
 
             await contract.CallAsync("SetMsg", new MapEntry
             {
-                Key = "coin",
+                Key = "coin" + userId.ToString(),
                 Value = x.ToString(),
             });
 
@@ -153,7 +196,7 @@ public class LoomTools : MonoBehaviour
 
         var result = await contract.StaticCallAsync<MapEntry>("GetMsg", new MapEntry
         {
-            Key = "coin"
+            Key = "coin" + userId.ToString()
         });
 
         if (result != null)
@@ -172,7 +215,7 @@ public class LoomTools : MonoBehaviour
 
                 await contract.CallAsync("SetMsg", new MapEntry
                 {
-                    Key = "coin",
+                    Key = "coin" + userId.ToString(),
                     Value = x.ToString(),
                 });
 
@@ -191,6 +234,17 @@ public class LoomTools : MonoBehaviour
             throw new Exception("Smart contract didn't return anything!");
         }
     }
+
+
+    public async Task CreateAccount()
+    {
+
+    }
+
+
+
+
+
 
     // Use this for initialization
     async void Start()
