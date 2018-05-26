@@ -73,12 +73,12 @@ public class LoomTools : MonoBehaviour
             await contract.CallAsync("SetMsg", new MapEntry
             {
                 Key = "usercount",
-                Value = "userId"
+                Value = userId.ToString()
             });
         }
         catch
         {
-            Debug.Log("Current no user: " + result.ToString());
+            Debug.Log("Current no user");
             await contract.CallAsync("SetMsg", new MapEntry
             {
                 Key = "usercount",
